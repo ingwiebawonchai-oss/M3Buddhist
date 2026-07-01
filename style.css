@@ -1,0 +1,153 @@
+@import url('https://fonts.googleapis.com/css2?family=Thasadith:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Archivo+Black&display=swap');
+
+
+*{
+    transition: 0.5s ease-in-out;
+    font-family: "Thasadith", "Archivo Black", sans-serif;
+    font-weight: 700;
+    font-style: normal;
+}
+
+body{
+    overflow: hidden;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-image: url(background3.gif);
+    background-size:200vh;
+    background-position-x: center;
+    user-select: none;
+    align-items: center;
+    justify-content: center;
+    background-color: rgb(27, 27, 40);
+}
+
+#game {
+    display: flex;
+    flex-direction: column;
+    box-shadow:  rgb(255, 255, 0, 0.5) 0px 50px 100px;
+    width: 90vh;
+    height: 90vh;
+    border-style: solid;
+    border-color: yellow;
+    border-width: 2px;
+    border-radius: 50%;
+    background: #FEDF00;
+    background: radial-gradient(circle, #FEDF00 0%, #FFFFFF 100%);
+    align-items: center;
+    justify-self: center;
+}
+
+
+#game div {
+    text-align: justify;
+    text-justify:inter-word;
+}
+
+#game div p{
+    font-size:3vh;
+    font-weight: bold;
+}
+
+#question{
+    width:45vh;
+    flex:1;
+    display: flex;
+    flex-direction: row;
+    gap: 1vh;
+    padding: 10vh;
+}
+
+#answers{
+    flex:9;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    gap: 1vh;
+}
+
+#answers button {
+    border-radius: 50px;
+    box-sizing: border-box;
+    width: 40vh;
+    border: none;
+    text-align: center;
+    flex: 1;
+    cursor:pointer;
+    padding: 2vh;
+    background-color: rgb(255, 255, 224);
+    font-size: 3vh;
+}
+
+#answers button:hover{
+    background-color: rgb(255, 255, 160);
+}
+
+#answers button:active{
+    background-color: yellow;
+}
+
+#menu {
+    align-items: center;
+    justify-self: center;
+    width:100vh;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    gap:2vh;
+}
+
+h1{
+    font-size:10vh;
+    color:black;
+    text-shadow: 0px 0px 10px rgb(255, 255, 255);
+}
+
+button{
+    width:100vh;
+    border-radius: 25px;
+    background-color:white;
+    font-size: 4vh;
+    cursor: pointer;
+    height: 10vh;
+}
+
+button:hover{
+    background-color:lightgoldenrodyellow;
+}
+
+button:active{
+    background-color:lightyellow;
+}
+
+#result {
+    border-radius: 25px;
+    padding:1vh;
+    font-size: 2.5vh;
+    background-color: white;
+    position: fixed;
+    z-index: 9999;
+    width:80vh;
+    height:30vh;
+    justify-self: center;
+    margin-top: 30vh;
+}
+
+#result h1{
+    font-size:8vh;
+    text-align: center;
+}
+
+#name {
+    padding:2vh;
+    background-color:white;
+    width: 90vh;
+    border-radius: 25px;
+    font-size: 2.5vh;
+}
+
+h2{
+    font-size: 5vh;
+    text-align: center;
+}
