@@ -211,106 +211,170 @@ function getRandomIntInclusive(min, max) {
     return Math.floor(Math.random() * (maxFloored - minCeiled + 1)) + minCeiled;
 }
 
-function waitUntilClick(elementId) {
-    return new Promise((resolve) => {
-        const button = document.getElementById(elementId);
-
-        button.addEventListener('click', function handler() {
-            button.removeEventListener('click', handler);
-            resolve();
-        });
-    });
-}
-
-function clicked(e) {
-    document.getElementById(e).style.backgroundColor = '#FF272A';
-}
-
-function correct(e) {
-    document.getElementById(e).style.backgroundColor = '#4CBB17';
-}
-
 const wait = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+let answered = false;
+let answerCorrect = false;
+let selectedAnswer = 0;
+
+function answer(choice, correct) {
+
+    if (answered) return;
+    selectedAnswer = choice;
+    answered = true;
+
+    document.querySelectorAll("#answers button").forEach(btn => {
+        btn.disabled = true;
+    });
+
+    if (choice == correct) {
+
+        answerCorrect = true;
+        document.getElementById("a" + choice).style.backgroundColor = "#4CBB17";
+
+    } else {
+
+        answerCorrect = false;
+
+        document.getElementById("a" + choice).style.backgroundColor = "#FF272A";
+
+        document.getElementById("a" + correct).style.backgroundColor = "#4CBB17";
+
+    }
+
+}
 
 async function start(e) {
-    let container = document.getElementById('container');
-    let indexOfe = topic.indexOf(e.textContent);
-    let group = data[indexOfe];
-    let z = [];
-    let y = 0;
 
+    let score = 0;
+
+    let container = document.getElementById("container");
+
+    let indexOfe = topic.indexOf(e.textContent);
+
+    let group = data[indexOfe];
+
+    let z = [];
 
     while (z.length < group.length) {
-        y = getRandomIntInclusive(0, (group.length) - 1);
-        if (!z.includes(y)) {
-            z.push(y);
-        }
+
+        let y = getRandomIntInclusive(0, group.length - 1);
+
+        if (!z.includes(y)) z.push(y);
+
     }
 
     let some = 0;
-    var x = 1;
 
+    let x = 1;
 
     while (some < z.length) {
+
+        answered = false;
+        answerCorrect = false;
+
         container.innerHTML = game;
-        document.getElementById('number').innerHTML = String(x) + ".";
 
+        document.getElementById("number").innerHTML = x + ".";
 
+        document.getElementById("kamtam").innerHTML =
+            group[z[some]].q;
 
-
-        document.getElementById('kamtam').innerHTML = group[z[some]]["q"];
-
-        var something = 0;
         let ans = "";
 
-        while (something <= group[z[some]]["a"].length - 1) {
-            if (something + 1 != group[z[some]]["r"]) {
-                ans += "<button id='a" + (something + 1) +
-                    "' onclick=\"clicked('a" + (something + 1) + "')\">" +
-                    group[z[some]]["a"][something] +
-                    "</button>";
-            }
-            else {
-                ans += "<button id='a" + (something + 1) +
-                    "' onclick=\"correct('a" + (something + 1) + "')\">" +
-                    group[z[some]]["a"][something] +
-                    "</button>";
-            }
-            something++;
+        for (let i = 0; i < group[z[some]].a.length; i++) {
+
+            ans += `
+<button
+id="a${i + 1}"
+onclick="answer(${i + 1},${group[z[some]].r})">
+${group[z[some]].a[i]}
+</button>`;
+
         }
 
-        ans += "<br><br><br><br><br><br><br><br></br>";
         document.getElementById("answers").innerHTML = ans;
 
-        await waitUntilClick(String('a' + group[z[some]]["r"]));
+        while (!answered) {
+            await wait(50);
+        }
+
+        if (answerCorrect)
+            score++;
 
         await wait(500);
 
-        document.body.insertAdjacentHTML(
-            "afterbegin",
-            `<div id="result">
-        ${group[z[some]].q}
-        <h1>${group[z[some]].a[group[z[some]].r - 1]}</h1>
-    </div>`
-        );
+        let result = document.createElement("div");
+        result.id = "result";
 
-        document.querySelectorAll("body > *:not(#result)").forEach(el => {
+        document.body.prepend(result);
+
+        if (answerCorrect) {
+
+            result.innerHTML = `
+        <h2>${group[z[some]].q}</h2>
+        <h1 style="color:#4CBB17">
+            ✔ ${group[z[some]].a[group[z[some]].r - 1]}
+        </h1>
+    `;
+
+        } else {
+            result.innerHTML = `
+<h2>${group[z[some]].q}</h2>
+<h1 style="color:#FF272A">
+✖ ${group[z[some]].a[selectedAnswer - 1]}
+</h1>
+`;
+
+            await wait(1000);
+
+            result.innerHTML = `
+<h2>${group[z[some]].q}</h2>
+<h1 style="color:#4CBB17">
+✔ ${group[z[some]].a[group[z[some]].r - 1]}
+</h1>
+`;
+        }
+
+        document.querySelectorAll("body>*:not(#result)").forEach(el => {
+
             el.style.filter = "blur(5px)";
+
         });
 
-        await wait(3000);
+        await wait(2000);
 
-        document.querySelectorAll("body > *:not(#result)").forEach(el => {
+        document.querySelectorAll("body>*:not(#result)").forEach(el => {
+
             el.style.filter = "";
+
         });
 
         document.getElementById("result")?.remove();
 
-        x++;
         some++;
 
+        x++;
+
     }
-    back();
+
+    container.innerHTML = `
+<div id="final">
+
+<h2>🎉 ทำแบบทดสอบเสร็จแล้ว</h1>
+
+<h2>คะแนนของคุณ</h2>
+
+<h1>${score} / ${group.length}</h1>
+
+<h2 id='percent' style='background-color:${score / group.length > 0.7 ? "#4CBB17" : "#FF272A"};'>${Math.round(score / group.length * 100)}%</h2>
+
+<button onclick="back()">
+กลับเมนู
+</button>
+
+</div>
+`;
+
 }
 
 function credit() {
